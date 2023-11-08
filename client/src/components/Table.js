@@ -10,6 +10,7 @@ const Table = ({ comments, issueList }) => {
             <th scope="col">Project</th>
             <th scope="col">Created By</th>
             <th scope="col">Latest Comment</th>
+            <th scope="col">Sentiment analysis</th>
             <th scope="col">Status</th>
           </tr>
         </thead>
@@ -31,6 +32,33 @@ const Table = ({ comments, issueList }) => {
                         - {el.commentedBy}
                       </em>
                     </div>
+                  ) : (
+                    ""
+                  )
+                )}
+              </td>
+              <td>
+                {comments.map((el) =>
+                  el.id === element.id ? (
+                    el.sentimentScore > 0 && el.sentimentScore != 0 ? (
+                      <img
+                        width={"50px"}
+                        src={require("../assets/smile.png")}
+                        alt="smile emoji"
+                      />
+                    ) : el.sentimentScore == 0 ? (
+                      <img
+                        width={"50px"}
+                        src={require("../assets/confused.png")}
+                        alt="neutral emoji"
+                      />
+                    ) : (
+                      <img
+                        width={"50px"}
+                        src={require("../assets/sad.png")}
+                        alt="sad emoji"
+                      />
+                    )
                   ) : (
                     ""
                   )

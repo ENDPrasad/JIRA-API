@@ -3,6 +3,17 @@ require("dotenv").config();
 const cors = require("cors");
 const { response } = require("express");
 const express = require("express");
+const Sentiment = require("sentiment");
+const sentiment = new Sentiment();
+
+var options = {
+  extras: {
+    completed: 3,
+    not: -2,
+    successfully: 2,
+    pending: -3,
+  },
+};
 const app = express();
 app.use(cors());
 const port = 3002;
@@ -106,21 +117,29 @@ app.get("/comments", async (req, res) => {
       responses.forEach((response) => {
         if (response.total) {
           let len = response.total - 1;
+          let cmts = [];
+          response.comments.forEach((element) =>
+            cmts.push(element.body.content[0].content[0].text)
+          );
+          // console.log("Coments:");
+          // console.log(cmts.toString());
+
           const d = {
             id: response.comments[len].self
               .split("issue/")[1]
               .split("/comment")[0],
             comment: response.comments[len].body.content[0].content[0].text,
             commentedBy: response.comments[len].author.displayName,
+            sentimentScore: sentiment.analyze(cmts.toString(), options).score,
           };
           comments.push(d);
         } else {
-          comments.push({
-            // id: response.comments[0].id,
-            id: null,
-            comment: null,
-            commentedBy: null,
-          });
+          // comments.push({
+          //   // id: response.comments[0].id,
+          //   id: null,
+          //   comment: null,
+          //   commentedBy: null,
+          // });
         }
       })
     )
